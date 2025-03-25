@@ -4,13 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-Do List</title>
+    <style>
+        #todo-list {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+
+        .circle_list {
+            counter-reset: circle 0;
+        }
+
+        .circle_item {
+            position: relative;
+            list-style: none;
+            margin-bottom: 5px;
+            padding-left: 0.8em;
+            display: flex;
+            align-items: center;
+        }
+
+        .circle_item::before {
+            position: absolute;
+            top: 60%;
+            left: 0;
+            transform: translateY(-50%);
+            counter-increment: circle 1;
+            content: counter(circle);
+            font-size: 0.8em;
+            width: 1.2em;
+            height: 1.2em;
+            border-radius: 50%;
+            background-color: #FFF;
+            text-align: center;
+            line-height: 1.2em;
+            border: 1px solid #333;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .checkbox {
+            accent-color: rgb(141, 117, 209);
+            margin-left: 10px
+        }
+
+        span {
+            margin-left: 1em;
+        }
+
+        button {
+            background-color: rgb(150, 120, 210);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: rgb(160, 140, 230);
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            margin: 5px 0 10px 0;
+            width: 20%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <h1>To-Do List</h1>
-    <ul id="todo-list"></ul>
+    <ul id="todo-list" class="circle_list"></ul>
     <form id="todo-form">
-        <input type="text" id="title" placeholder="Title" required>
-        <input type="text" id="description" placeholder="Description" required>
+        <input type="text" id="title" placeholder="yyyy/mm/dd" required>
+        <input type="text" id="description" placeholder="description" required>
         <button type="submit">Add To-Do</button>
     </form>
     <script>
@@ -19,10 +98,42 @@
             const todos = await response.json();
             const todoList = document.getElementById('todo-list');
             todoList.innerHTML = '';
-            todos.forEach(todo => {
+
+            todos.forEach((todo) => {
                 const li = document.createElement('li');
-                li.textContent = `${todo.title}: ${todo.description}`;
+                li.classList.add('circle_item');
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.classList.add('checkbox');
+                checkbox.checked = todo.completed;
+                
+                checkbox.addEventListener('change', async () => {
+                    todo.completed = checkbox.checked;
+                    await updateTodo(todo); 
+                    fetchTodos(); 
+                });
+
+                const span = document.createElement('span');
+                span.textContent = `${todo.title} ${todo.description}`;
+
+                if (todo.completed) {
+                    span.classList.add('completed');
+                }
+
                 todoList.appendChild(li);
+                li.appendChild(span);
+                li.appendChild(checkbox);
+            });
+        }
+
+        async function updateTodo(todo) {
+            await fetch(`/todos/${todo.id}`, {
+                method: 'PUT', 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(todo)
             });
         }
 
