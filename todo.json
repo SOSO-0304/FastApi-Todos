@@ -3,7 +3,7 @@
         "id": 1742910123813,
         "title": "2025/03/25",
         "description": "\ud504\uc5b8\uacfc\uc81c",
-        "completed": true
+        "completed": false
     },
     {
         "id": 1742910143532,
@@ -15,6 +15,12 @@
         "id": 1742910150576,
         "title": "2025/03/25",
         "description": "\uc624\ud508\uc18c\uc2a4 \uae30\ub2a5 \ucd94\uac00",
+        "completed": false
+    },
+    {
+        "id": 1742986411457,
+        "title": "----------",
+        "description": "----------",
         "completed": false
     }
 ]
