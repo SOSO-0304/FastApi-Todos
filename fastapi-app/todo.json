@@ -1,15 +1,9 @@
 [
     {
-        "id": 1742910123813,
-        "title": "2025/03/25",
-        "description": "\ud504\uc5b8\uacfc\uc81c",
-        "completed": true
-    },
-    {
         "id": 1742910143532,
         "title": "2025/03/25",
-        "description": "\uc790\uc18c\uc11c \uac80\ud1a0",
-        "completed": false
+        "description": "\uc790\uc18c\uc11c \uc81c\ucd9c",
+        "completed": true
     },
     {
         "id": 1742910150576,
