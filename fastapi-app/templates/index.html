@@ -19,9 +19,12 @@
             margin-bottom: 20px;
         }
         
-        #todo-list {
-            list-style-type: none;
-            padding-left: 20px;
+        form {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;  /* 수직 중앙 정렬 */
+            align-items: center;      /* 수평 중앙 정렬 */
+            margin-top: 20px;         /* 상단 여백 추가 */
         }
 
         .circle_list {
@@ -53,6 +56,11 @@
             line-height: 1.2em;
             border: 1px solid #333;
         }
+        
+        .overdue {
+            color: red;  /* 마감기한이 지난 항목은 빨간색으로 표시 */
+            font-weight: bold;
+        }
 
         .completed {
             text-decoration: line-through;
@@ -60,7 +68,7 @@
         }
 
         .checkbox {
-            accent-color: rgb(141, 181, 209);
+            accent-color: rgb(218, 128, 164);
             margin-left: 10px;
         }
 
@@ -69,7 +77,7 @@
         }
 
         button {
-            background-color: rgb(160, 200, 230);
+            background-color: rgb(209, 105, 145);
             color: white;
             padding: 5px 10px;
             border: none;
@@ -80,37 +88,33 @@
         }
 
         button:hover {
-            background-color: rgb(170, 210, 240);
+            background-color:rgb(218, 128, 164);
         }
 
         .edit-btn {
-            background-color: rgb(160, 200, 230);
+            background-color: rgb(209, 105, 145);
         }
 
         .edit-btn:hover {
-            background-color: rgb(170, 210, 240);
+            background-color: rgb(218, 128, 164);
         }
 
         .delete-btn {
-            background-color: rgb(160, 200, 230);
+            background-color: rgb(209, 105, 145);
         }
 
         .delete-btn:hover {
-            background-color: rgb(170, 210, 240);
+            background-color: rgb(218, 128, 164);
         }
 
         input[type="text"] {
             padding: 8px;
             margin: 5px 0 10px 0;
-            width: 20%;
+            width:200%;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 0.8em;
             box-sizing: border-box;
-        }
-
-        form {
-            margin-bottom: 20px;
         }
 
         .action-buttons {
@@ -124,59 +128,64 @@
     <h1>To-Do List</h1>
     <ul id="todo-list" class="circle_list"></ul>
     <form id="todo-form">
-        <input type="text" id="title" placeholder="yyyy/mm/dd" required>
+        <input type="text" id="title" placeholder="title" required>
         <input type="text" id="description" placeholder="description" required>
+        <input type="text" id="due_date" placeholder="due_date" required>
         <button type="submit">Add To-Do</button>
-    </form>
+    </form>    
     <script>
         async function fetchTodos() {
             const response = await fetch('/todos');
             const todos = await response.json();
             const todoList = document.getElementById('todo-list');
             todoList.innerHTML = '';
-
+        
             todos.forEach((todo) => {
                 const li = document.createElement('li');
                 li.classList.add('circle_item');
-                
+                    
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.classList.add('checkbox');
-                checkbox.checked = todo.completed;
-                
+                checkbox.checked = todo.completed;  // 서버에서 받아온 completed 상태에 따라 체크박스 상태 업데이트
+            
                 checkbox.addEventListener('change', async () => {
                     todo.completed = checkbox.checked;
                     await updateTodo(todo); 
                     fetchTodos(); 
                 });
-
+            
                 const span = document.createElement('span');
                 span.textContent = `${todo.title} ${todo.description}`;
-
+            
                 if (todo.completed) {
                     span.classList.add('completed');
                 }
-
+            
+                const spanDueDate = document.createElement('span');
+                spanDueDate.textContent = `${todo.due_date} 까지`;  // 마감 날짜 표시
+                span.appendChild(spanDueDate);
+            
                 const actionButtons = document.createElement('div');
                 actionButtons.classList.add('action-buttons');
-
-                
+            
                 const editButton = document.createElement('button');
                 editButton.textContent = 'Edit';
                 editButton.classList.add('edit-btn');
                 editButton.addEventListener('click', () => {
                     const newTitle = prompt('Edit Title:', todo.title);
                     const newDescription = prompt('Edit Description:', todo.description);
-
-                    if (newTitle !== null && newDescription !== null) {
+                    const newDueDate = prompt('Edit Due Date:', todo.due_date);
+            
+                    if (newTitle !== null && newDescription !== null && newDueDate !== null) {
                         todo.title = newTitle;
                         todo.description = newDescription;
+                        todo.due_date = newDueDate; // 마감 날짜 수정
                         updateTodo(todo);
                         fetchTodos();
                     }
                 });
-
-               
+            
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Delete';
                 deleteButton.classList.add('delete-btn');
@@ -184,17 +193,18 @@
                     await deleteTodo(todo.id);
                     fetchTodos();
                 });
-
+            
                 actionButtons.appendChild(editButton);
                 actionButtons.appendChild(deleteButton);
-
+            
                 todoList.appendChild(li);
                 li.appendChild(span);
                 li.appendChild(checkbox);
                 li.appendChild(actionButtons);
             });
+            
         }
-
+    
         async function updateTodo(todo) {
             await fetch(`/todos/${todo.id}`, {
                 method: 'PUT', 
@@ -204,30 +214,44 @@
                 body: JSON.stringify(todo)
             });
         }
-
+    
         async function deleteTodo(todoId) {
             await fetch(`/todos/${todoId}`, {
                 method: 'DELETE'
             });
         }
-
+    
+        // 중복된 submit 이벤트 리스너 제거하고 하나로 합침
         document.getElementById('todo-form').addEventListener('submit', async (event) => {
             event.preventDefault();
+        
+            // 입력 필드 순서대로 값 받기
             const title = document.getElementById('title').value;
             const description = document.getElementById('description').value;
+            const dueDate = document.getElementById('due_date').value;
+        
+            // 서버로 POST 요청 보내기
             const response = await fetch('/todos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ id: Date.now(), title, description, completed: false })
+                body: JSON.stringify({
+                    id: Date.now(), 
+                    title, 
+                    description, 
+                    completed: false, 
+                    due_date: dueDate
+                })  // due_date 필드를 포함한 데이터를 전송
             });
+        
             if (response.ok) {
-                fetchTodos();
+                fetchTodos();  // To-Do 목록 다시 불러오기
             }
         });
-
+        
         fetchTodos();
     </script>
+    
 </body>
 </html>

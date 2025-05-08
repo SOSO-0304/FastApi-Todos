@@ -12,16 +12,36 @@ class TodoItem(BaseModel):
     title: str
     description: str
     completed: bool
+    due_date: str  # 마감 날짜 필드 추가
 
 # JSON 파일 경로
 TODO_FILE = "todo.json"
 
 # JSON 파일에서 To-Do 항목 로드
+from datetime import datetime
+
+# JSON 파일에서 To-Do 항목 로드
 def load_todos():
     if os.path.exists(TODO_FILE):
         with open(TODO_FILE, "r") as file:
-            return json.load(file)
+            todos = json.load(file)
+            today = datetime.now()
+            for todo in todos:
+                # 날짜 형식이 여러 가지일 수 있으므로 변환을 시도
+                try:
+                    due_date = datetime.strptime(todo['due_date'], "%Y-%m-%d")
+                except ValueError:
+                    try:
+                        # 다른 형식 시도 (예: 'YYYY/MM/DD')
+                        due_date = datetime.strptime(todo['due_date'], "%Y/%m/%d")
+                    except ValueError:
+                        # 잘못된 형식이거나 파싱할 수 없는 날짜인 경우 기본값을 설정 (예: 현재 날짜)
+                        due_date = today
+                if due_date < today:
+                    todo['completed'] = True
+            return todos
     return []
+
 
 # JSON 파일에 To-Do 항목 저장
 def save_todos(todos):
@@ -47,7 +67,7 @@ def update_todo(todo_id: int, updated_todo: TodoItem):
     todos = load_todos()
     for todo in todos:
         if todo["id"] == todo_id:
-            todo.update(updated_todo.dict())
+            todo.update(updated_todo.dict())  # 업데이트된 항목을 반영
             save_todos(todos)
             return updated_todo
     raise HTTPException(status_code=404, detail="To-Do item not found")
@@ -63,6 +83,6 @@ def delete_todo(todo_id: int):
 # HTML 파일 서빙
 @app.get("/", response_class=HTMLResponse)
 def read_root():
-    with open("templates/index.html", "r") as file:
+    with open("templates/index.html", "r", encoding='utf-8') as file:  # encoding='utf-8' 추가
         content = file.read()
     return HTMLResponse(content=content)
