@@ -3,8 +3,8 @@
         "id": 1746703082808,
         "title": "2025/01/01",
         "description": "\ub0b4\uc6a92",
-        "completed": true,
-        "due_date": "2025/05/05"
+        "completed": false,
+        "due_date": "2025/05/11"
     },
     {
         "id": 1746703356283,
@@ -31,7 +31,7 @@
         "id": 1746713665719,
         "title": "2025/01/03",
         "description": "\ub0b4\uc6a96",
-        "completed": false,
+        "completed": true,
         "due_date": "2025/05/08"
     }
 ]
