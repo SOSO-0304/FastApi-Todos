@@ -90,3 +90,10 @@ def read_root():
     with open("templates/index.html", "r", encoding='utf-8') as file:  # encoding='utf-8' 추가
         content = file.read()
     return HTMLResponse(content=content)
+
+# 검색 기능 추가
+@app.get("/todos/search", response_model=list[TodoItem])
+def search_todos(query: str):
+    todos = load_todos()
+    filtered_todos = [todo for todo in todos if query.lower() in todo["title"].lower() or query.lower() in todo["description"].lower()]
+    return filtered_todos
