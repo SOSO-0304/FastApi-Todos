@@ -27,7 +27,7 @@ def test_get_todos_with_items():
         title="Test",
         description="Test description",
         completed=False,
-        due_date=datetime.now()  # 필수 필드 추가
+        due_date=datetime.now().isoformat()  # 문자열로 변환
     )
     save_todos([todo.dict()])
     response = client.get("/todos")
@@ -52,7 +52,7 @@ def test_update_todo():
         title="Test",
         description="Test description",
         completed=False,
-        due_date=datetime.now()  # 필수 필드 추가
+        due_date=datetime.now().isoformat()  # 문자열로 변환
     )
     save_todos([todo.dict()])
     updated_todo = {
@@ -60,7 +60,7 @@ def test_update_todo():
         "title": "Updated",
         "description": "Updated description",
         "completed": True,
-        "due_date": datetime.now().isoformat()  # API 요청용 문자열 포맷
+        "due_date": datetime.now().isoformat()
     }
     response = client.put("/todos/1", json=updated_todo)
     assert response.status_code == 200
@@ -77,13 +77,13 @@ def test_delete_todo():
         title="Test",
         description="Test description",
         completed=False,
-        due_date=datetime.now()  # 필수 필드 추가
+        due_date=datetime.now().isoformat()  # 문자열로 변환
     )
     save_todos([todo.dict()])
     response = client.delete("/todos/1")
     assert response.status_code == 200
     assert response.json()["message"] == "To-Do item deleted"
-       
+           
 def test_delete_todo_not_found():
     response = client.delete("/todos/1")
     assert response.status_code == 200
