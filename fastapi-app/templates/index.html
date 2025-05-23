@@ -6,134 +6,158 @@
     <title>To-Do List</title>
     <style>
         body {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            margin-left: 20px;
-        }
-        
-        h1 {
-            margin-bottom: 20px;
-            text-align: left; /* 제목을 왼쪽 정렬 */
-        }
+                display: flex;
+                justify-content: space-between; /* 왼쪽과 오른쪽에 공간을 분배 */
+                align-items: flex-start;
+                height: 100vh;
+                margin: 0;
+                font-family: Arial, sans-serif;
+                margin-left: 20px;
+            }
+            
+            h1 {
+                margin-bottom: 20px;
+                text-align: left; /* 제목을 왼쪽 정렬 */
+            }
 
-        form {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start; /* 입력 폼을 왼쪽 정렬 */
-            margin-top: 20px;
-        }
+            form {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: flex-start; /* 입력 폼을 왼쪽 정렬 */
+                margin-top: 20px;
+            }
 
-        .circle_list {
-            counter-reset: circle 0;
-        }
+            /* 왼쪽 열 */
+            .left-column {
+                width: 50%; /* 왼쪽 영역 비율 */
+                display: flex;
+                flex-direction: column; /* 세로로 정렬 */
+            }
 
-        .circle_item {
-            position: relative;
-            list-style: none;
-            margin-bottom: 5px;
-            padding-left: 0.8em;
-            display: flex;
-            align-items: center;
-        }
+            /* 오른쪽 열 */
+            .right-column {
+                width: 55%; /* 오른쪽 영역 비율 */
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+            }
 
-        .circle_item::before {
-            position: absolute;
-            top: 60%;
-            left: 0;
-            transform: translateY(-50%);
-            counter-increment: circle 1;
-            content: counter(circle);
-            font-size: 0.8em;
-            width: 1.2em;
-            height: 1.2em;
-            border-radius: 50%;
-            background-color: #FFF;
-            text-align: center;
-            line-height: 1.2em;
-            border: 1px solid #333;
-        }
-        
-        .overdue {
-            color: red;  /* 마감기한이 지난 항목은 빨간색으로 표시 */
-            font-weight: bold;
-        }
+            /* 달력 스타일 */
+            .calendar-container {
+                margin-top: 20px;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
 
-        .completed {
-            text-decoration: line-through;
-            color: #888;
-        }
+            /* To-Do 항목 스타일 */
+            .circle_list {
+                counter-reset: circle 0;
+            }
 
-        .checkbox {
-            accent-color: rgb(218, 128, 164);
-            margin-left: 10px;
-        }
+            .circle_item {
+                position: relative;
+                list-style: none;
+                margin-bottom: 5px;
+                padding-left: 0.8em;
+                display: flex;
+                align-items: center;
+            }
 
-        span {
-            margin-left: 1em;
-        }
+            .circle_item::before {
+                position: absolute;
+                top: 60%;
+                left: 0;
+                transform: translateY(-50%);
+                counter-increment: circle 1;
+                content: counter(circle);
+                font-size: 0.8em;
+                width: 1.2em;
+                height: 1.2em;
+                border-radius: 50%;
+                background-color: #FFF;
+                text-align: center;
+                line-height: 1.2em;
+                border: 1px solid #333;
+            }
+            
+            .overdue {
+                color: red;  /* 마감기한이 지난 항목은 빨간색으로 표시 */
+                font-weight: bold;
+            }
 
-        button {
-            background-color: rgb(209, 105, 145);
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            font-size: 0.8em;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+            .completed {
+                text-decoration: line-through;
+                color: #888;
+            }
 
-        button:hover {
-            background-color:rgb(218, 128, 164);
-        }
+            .checkbox {
+                accent-color: rgb(218, 128, 164);
+                margin-left: 10px;
+            }
 
-        .edit-btn {
-            background-color: rgb(209, 105, 145);
-        }
+            span {
+                margin-left: 1em;
+            }
 
-        .edit-btn:hover {
-            background-color: rgb(218, 128, 164);
-        }
+            button {
+                background-color: rgb(209, 105, 145);
+                color: white;
+                padding: 5px 10px;
+                border: none;
+                border-radius: 5px;
+                font-size: 0.8em;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
 
-        .delete-btn {
-            background-color: rgb(209, 105, 145);
-        }
+            button:hover {
+                background-color:rgb(218, 128, 164);
+            }
 
-        .delete-btn:hover {
-            background-color: rgb(218, 128, 164);
-        }
+            .edit-btn {
+                background-color: rgb(209, 105, 145);
+            }
 
-        input[type="text"] {
-            padding: 8px;
-            margin: 5px 0 10px 0;
-            width:200%;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 0.8em;
-            box-sizing: border-box;
-        }
+            .edit-btn:hover {
+                background-color: rgb(218, 128, 164);
+            }
 
-        .action-buttons {
-            margin-left: 10px;
-            display: flex;
-            gap: 5px;
-        }
+            .delete-btn {
+                background-color: rgb(209, 105, 145);
+            }
 
-        ul {
-            list-style: none;  /* 리스트 항목 앞의 동그라미 제거 */
-            padding: 0;
-            margin-left: 0;
-        }
-    </style>
+            .delete-btn:hover {
+                background-color: rgb(218, 128, 164);
+            }
+
+            input[type="text"] {
+                padding: 8px;
+                margin: 5px 0 10px 0;
+                width: 100%; /* 입력란 너비 수정 */
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 0.8em;
+                box-sizing: border-box;
+            }
+
+            .action-buttons {
+                margin-left: 10px;
+                display: flex;
+                gap: 5px;
+            }
+
+            ul {
+                list-style: none;  /* 리스트 항목 앞의 동그라미 제거 */
+                padding: 0;
+                margin-left: 0;
+            }
+        </style>
 </head>
 <body>
     <h1>To-Do List</h1>
+    <div id="calendar" class="calendar-container"></div>
     <ul id="todo-list" class="circle_list"></ul>
     <form id="todo-form">
         <input type="text" id="title" placeholder="title" required>
@@ -149,6 +173,80 @@
     <ul id="search-results" class="circle_list"></ul> 
     
     <script>
+        // HTML의 calendar element 가져오기
+        calendar_box = document.getElementById("calendar");
+
+        function printCalendar(y, m) {    
+            // 현재 날짜와 현재 달에 1일의 날짜 객체 생성
+            var date = new Date(); // 날짜 객체 생성
+            var nowY = date.getFullYear(); // 현재 연도
+            var nowM = date.getMonth(); // 현재 월
+            var nowD = date.getDate(); // 현재 일
+
+            // 연도, 월을 입력받지 않은 경우에는 현재 날짜의 연도, 월 정보를 사용함
+            y = (y != undefined) ? y : nowY;
+            m = (m != undefined) ? m - 1 : nowM;
+
+            // 현재 월의 1일 정보 
+            var theDate = new Date(y, m, 1); 
+            var theDay = theDate.getDay();
+
+            // 1월부터 12월까지 마지막 일을 배열로 저장
+            var last = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            
+            // 윤년 계산
+            if (y % 4 == 0 && y % 100 != 0 || y % 400 == 0) last[1] = 29;
+            
+            // 현재 월의 마지막 일 정보
+            var lastDate = last[m]; // 현재 월의 마지막이 몇일인지 구함
+
+            // 현재 월의 달력에 필요한 행의 개수
+            var row = Math.ceil((theDay + lastDate) / 7);
+
+            // 요일 행 생성
+            var calendar = "<table border='1'>";
+            calendar += "<tr>";
+            calendar += "<th>MON</th>";
+            calendar += "<th>TUE</th>";
+            calendar += "<th>WED</th>";
+            calendar += "<th>THU</th>";
+            calendar += "<th>FRI</th>";
+            calendar += "<th>SAT</th>";
+            calendar += "<th>SUN</th>";
+            calendar += "</tr>";
+
+            // 1일부터 기록
+            var dNum = 1;
+
+            // 이중 for문을 이용해 달력 테이블 생성
+            for (var i = 1; i <= row; i++) {
+                calendar += "<tr>"; // 행 생성
+
+                for (var k = 1; k <= 7; k++) { // 열 생성 (td 태그 생성)
+                    // 빈 날짜는 빈칸으로 표기
+                    if (i == 1 && k < theDay || dNum > lastDate) {
+                        calendar += "<td> &nbsp; </td>";
+                    } else {
+                        // 오늘 날짜
+                        if (dNum === nowD) {
+                            calendar += "<td id='today'>" + dNum + "</td>";
+                        } else {
+                            // 오늘이 아닌 날짜
+                            calendar += "<td>" + dNum + "</td>";
+                        }
+                        // 일 증가
+                        dNum++;
+                    }
+                }
+                calendar += "</tr>";
+            }
+
+            // innerHTML값을 달력 테이블로 변경
+            calendar_box.innerHTML = calendar;
+        }
+
+        // 달력 출력 (현재 연도, 월로 달력 출력)
+        printCalendar();
         async function fetchTodos() {
             const response = await fetch('/todos');
             const todos = await response.json();
