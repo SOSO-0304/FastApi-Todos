@@ -78,6 +78,16 @@ services:
     networks:
       - loadtest-net
 
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb-data:/var/lib/influxdb
+    networks:
+      - loadtest-net
+
 networks:
   loadtest-net:
     driver: bridge
@@ -88,3 +98,4 @@ volumes:
   sonarqube_logs:
   sonarqube_extensions:
   grafana-data:
+  influxdb-data:
