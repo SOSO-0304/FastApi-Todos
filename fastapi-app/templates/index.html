@@ -5,158 +5,199 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-Do List</title>
     <style>
-        body {
-                display: flex;
-                justify-content: space-between; /* 왼쪽과 오른쪽에 공간을 분배 */
-                align-items: flex-start;
-                height: 100vh;
-                margin: 0;
-                font-family: Arial, sans-serif;
-                margin-left: 20px;
-            }
-            
-            h1 {
-                margin-bottom: 20px;
-                text-align: left; /* 제목을 왼쪽 정렬 */
-            }
+    body {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        margin-left: 20px;
+        background-color: white; /* 기본 배경 색 */
+        color: black; /* 기본 텍스트 색 */
+        transition: background-color 0.3s, color 0.3s;
+    }
 
-            form {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: flex-start; /* 입력 폼을 왼쪽 정렬 */
-                margin-top: 20px;
-            }
+    .dark-mode {
+        background-color: #2e2e2e; /* 다크한 회색톤 */
+        color: #ccc; /* 텍스트 색을 밝게 */
+    }
 
-            /* 왼쪽 열 */
-            .left-column {
-                width: 50%; /* 왼쪽 영역 비율 */
-                display: flex;
-                flex-direction: column; /* 세로로 정렬 */
-            }
+    /* 할 일 항목의 배경색을 부드럽게 */
+    .dark-mode .circle_item {
+        background-color: #444;
+        color: white;
+    }
 
-            /* 오른쪽 열 */
-            .right-column {
-                width: 55%; /* 오른쪽 영역 비율 */
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
-            }
+    .dark-mode button {
+        background-color: #555;
+        color: white;
+    }
 
-            /* 달력 스타일 */
-            .calendar-container {
-                margin-top: 20px;
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-            }
+    .dark-mode input[type="text"] {
+        background-color: #666;
+        color: white;
+        border: 1px solid #777;
+    }
 
-            /* To-Do 항목 스타일 */
-            .circle_list {
-                counter-reset: circle 0;
-            }
+    h1 {
+        margin-bottom: 20px;
+        text-align: left;
+    }
 
-            .circle_item {
-                position: relative;
-                list-style: none;
-                margin-bottom: 5px;
-                padding-left: 0.8em;
-                display: flex;
-                align-items: center;
-            }
+    form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        margin-top: 20px;
+    }
 
-            .circle_item::before {
-                position: absolute;
-                top: 60%;
-                left: 0;
-                transform: translateY(-50%);
-                counter-increment: circle 1;
-                content: counter(circle);
-                font-size: 0.8em;
-                width: 1.2em;
-                height: 1.2em;
-                border-radius: 50%;
-                background-color: #FFF;
-                text-align: center;
-                line-height: 1.2em;
-                border: 1px solid #333;
-            }
-            
-            .overdue {
-                color: red;  /* 마감기한이 지난 항목은 빨간색으로 표시 */
-                font-weight: bold;
-            }
+    .left-column {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+    }
 
-            .completed {
-                text-decoration: line-through;
-                color: #888;
-            }
+    .right-column {
+        width: 55%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
 
-            .checkbox {
-                accent-color: rgb(218, 128, 164);
-                margin-left: 10px;
-            }
+    .calendar-container {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
 
-            span {
-                margin-left: 1em;
-            }
+    .circle_list {
+        counter-reset: circle 0;
+    }
 
-            button {
-                background-color: rgb(209, 105, 145);
-                color: white;
-                padding: 5px 10px;
-                border: none;
-                border-radius: 5px;
-                font-size: 0.8em;
-                cursor: pointer;
-                transition: background-color 0.3s;
-            }
+    .circle_item {
+        position: relative;
+        list-style: none;
+        margin-bottom: 5px;
+        padding-left: 0.8em;
+        display: flex;
+        align-items: center;
+    }
 
-            button:hover {
-                background-color:rgb(218, 128, 164);
-            }
+    .circle_item::before {
+        position: absolute;
+        top: 60%;
+        left: 0;
+        transform: translateY(-50%);
+        counter-increment: circle 1;
+        content: counter(circle);
+        font-size: 0.8em;
+        width: 1.2em;
+        height: 1.2em;
+        border-radius: 50%;
+        background-color: #FFF;
+        text-align: center;
+        line-height: 1.2em;
+        border: 1px solid #333;
+    }
 
-            .edit-btn {
-                background-color: rgb(209, 105, 145);
-            }
+    .overdue {
+        color: red;
+        font-weight: bold;
+    }
 
-            .edit-btn:hover {
-                background-color: rgb(218, 128, 164);
-            }
+    .completed {
+        text-decoration: line-through;
+        color: #888;
+    }
 
-            .delete-btn {
-                background-color: rgb(209, 105, 145);
-            }
+    .checkbox {
+        accent-color: rgb(218, 128, 164);
+        margin-left: 10px;
+    }
 
-            .delete-btn:hover {
-                background-color: rgb(218, 128, 164);
-            }
+    span {
+        margin-left: 1em;
+    }
 
-            input[type="text"] {
-                padding: 8px;
-                margin: 5px 0 10px 0;
-                width: 100%; /* 입력란 너비 수정 */
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                font-size: 0.8em;
-                box-sizing: border-box;
-            }
+    button {
+        background-color: rgb(209, 105, 145);
+        color: white;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: 0.8em;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
 
-            .action-buttons {
-                margin-left: 10px;
-                display: flex;
-                gap: 5px;
-            }
+    button:hover {
+        background-color: rgb(218, 128, 164);
+    }
 
-            ul {
-                list-style: none;  /* 리스트 항목 앞의 동그라미 제거 */
-                padding: 0;
-                margin-left: 0;
-            }
-        </style>
+    .edit-btn {
+        background-color: rgb(209, 105, 145);
+    }
+
+    .edit-btn:hover {
+        background-color: rgb(218, 128, 164);
+    }
+
+    .delete-btn {
+        background-color: rgb(209, 105, 145);
+    }
+
+    .delete-btn:hover {
+        background-color: rgb(218, 128, 164);
+    }
+
+    input[type="text"] {
+        padding: 8px;
+        margin: 5px 0 10px 0;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 0.8em;
+        box-sizing: border-box;
+    }
+
+    .action-buttons {
+        margin-left: 10px;
+        display: flex;
+        gap: 5px;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin-left: 0;
+    }
+
+    /* 다크모드 스타일 */
+    .dark-mode .circle_item {
+        background-color: #333;
+        color: white;
+    }
+
+    .dark-mode button {
+        background-color: #444;
+        border: 1px solid #555;
+    }
+
+    .dark-mode input[type="text"] {
+        background-color: #555;
+        color: white;
+        border: 1px solid #666;
+    }
+</style>
+
 </head>
 <body>
     <h1>To-Do List</h1>
+    <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
     <div id="calendar" class="calendar-container"></div>
     <ul id="todo-list" class="circle_list"></ul>
     <form id="todo-form">
@@ -405,6 +446,10 @@
         });
         
         fetchTodos();
+        function toggleDarkMode() {
+        const body = document.querySelector('body');
+        body.classList.toggle('dark-mode'); // 다크모드 클래스 토글
+    }
     </script>
     
 </body>
